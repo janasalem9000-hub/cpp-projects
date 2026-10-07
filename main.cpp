@@ -3,6 +3,9 @@
 
 using namespace std;
 
+// main.cpp - Jana
+// Connects all parts of the program together, handles the overall program flow,
+// and displays the final mission results.
 int main() {
     Position startPoint;
     startPoint.x = 0;

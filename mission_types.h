@@ -2,6 +2,9 @@
 #define MISSION_TYPES_H
 
 #include <vector>
+// mission_types.h - Jana
+// Defines the shared data structures for the project, including positions,
+// drone information, obstacles, no-fly zones, and environment settings.
 
 struct Position {
     int x;

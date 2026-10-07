@@ -1,6 +1,9 @@
 #include "mission_types.h"
 
-// Lamees Tasks here: add pathfinding / A* code here
+// pathfinder.cpp - Lamees
+// Contains the A* pathfinding logic used to find a valid route while avoiding
+// obstacles and no-fly zones, and returns the final route coordinates.
+
 void testPathfinding() {
     Position test;
     test.x = 1;
