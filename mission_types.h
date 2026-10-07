@@ -1,6 +1,6 @@
 #ifndef MISSION_TYPES_H
 #define MISSION_TYPES_H
-
+#include <vector>
 struct Position {
     int x;
     int y;
@@ -18,6 +18,8 @@ struct Environment {
 
     Position start;
     Position destination;
+    std::vector<Position> obstacles;
+    std::vector<Position> noFlyZones;
 };
 
 #endif
