@@ -12,5 +12,12 @@ struct Drone {
     double currentBattery;
     double energyConsumptionRate;
 };
+struct Environment {
+    int gridWidth;
+    int gridHeight;
+
+    Position start;
+    Position destination;
+};
 
 #endif
