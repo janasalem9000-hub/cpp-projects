@@ -6,4 +6,11 @@ struct Position {
     int y;
 };
 
+struct Drone {
+    double speed;
+    double batteryCapacity;
+    double currentBattery;
+    double energyConsumptionRate;
+};
+
 #endif
