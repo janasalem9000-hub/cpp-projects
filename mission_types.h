@@ -1,9 +1,17 @@
 #ifndef MISSION_TYPES_H
 #define MISSION_TYPES_H
+
 #include <vector>
+
 struct Position {
     int x;
     int y;
+};
+
+struct Area {
+    Position location;
+    int width;
+    int height;
 };
 
 struct Drone {
@@ -11,15 +19,23 @@ struct Drone {
     double batteryCapacity;
     double currentBattery;
     double energyConsumptionRate;
+    double packageWeight;
+    double packageEnergyRate;
+    double safetyReserve;
 };
+
 struct Environment {
     int gridWidth;
     int gridHeight;
 
     Position start;
     Position destination;
-    std::vector<Position> obstacles;
-    std::vector<Position> noFlyZones;
+
+    std::vector<Area> obstacles;
+    std::vector<Area> noFlyZones;
+
+    bool simulationMode;
+    bool returnTrip;
 };
 
 #endif
