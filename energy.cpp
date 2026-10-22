@@ -1,4 +1,5 @@
 #include "mission_types.h"
+#include "energy.h"
 
 // energy.cpp - Noor
 // Contains the engineering calculations for route distance, flight time,
