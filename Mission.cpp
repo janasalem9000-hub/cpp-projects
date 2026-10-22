@@ -34,9 +34,10 @@ Mission::Mission(Drone& drone,
       safetyReserve(safetyReserve),
       returnBaseFlag(returnToBase)
 {
-    // TODO: Throw invalid_argument if safetyReserve is invalid.
+  // Throw invalid_argument if safetyReserve is invalid.
+  if (safetyReserve < 0 || safetyReserve > 100)
+    throw invalid_argument("safetyReserve must be between 0 and 100");
 }
-
 
 // ======================================================
 // STEP 2: Evaluate the Mission
@@ -44,34 +45,31 @@ Mission::Mission(Drone& drone,
 
 MissionResult Mission::evaluate()
 {
-    // Create a result object.
-    // Its fields already have default values.
-    MissionResult result;
+  // Create a result object.
+  // Its fields already have default values.
+  MissionResult result;
+  // --------------------------------------------------
+  // STEP 2.1: Find the delivery route
+  // --------------------------------------------------
+  // Call pathFinder.findPath() using:
+  // startingPosition and destinationPosition.
+  //
+  // Store the returned vector in result.path. 
+  result.path = pathFinder.findPath(startingPosition, destinationPosition);
 
-
-    // --------------------------------------------------
-    // STEP 2.1: Find the delivery route
-    // --------------------------------------------------
-    // Call pathFinder.findPath() using:
-    // startingPosition and destinationPosition.
-    //
-    // Store the returned vector in result.path.
-
-    // TODO: result.path = ...
-
-
-    // --------------------------------------------------
-    // STEP 2.2: Check whether a route exists
-    // --------------------------------------------------
-    // If result.path is empty:
-    //     return result immediately.
-    //
-    // Otherwise:
-    //     result.pathFound = true;
-
-    // TODO: Implement the check.
-
-
+// --------------------------------------------------
+// STEP 2.2: Check whether a route exists
+// --------------------------------------------------
+// If result.path is empty:
+//     return result immediately.
+//
+// Otherwise:
+//     result.pathFound = true;
+  
+     if (result.path.empty())
+        return result;
+     else result.pathFound = true;
+  
     // --------------------------------------------------
     // STEP 2.3: Calculate delivery distance
     // --------------------------------------------------
@@ -84,8 +82,7 @@ MissionResult Mission::evaluate()
     //
     // Store in result.distance.
 
-    // TODO: Calculate the distance.
-
+    result.distance = result.path.size() - 1;
 
     // --------------------------------------------------
     // STEP 2.4: Handle return to base
@@ -110,17 +107,21 @@ MissionResult Mission::evaluate()
 
     if (returnBaseFlag)
     {
-        // TODO 2.4.1: Find return path.
+        //Find return path.
+      vector<Position> back = pathFinder.findPath(destinationPosition, startingPosition);
 
-        // TODO 2.4.2: Check whether return path is empty.
-
-        // TODO 2.4.3: Add return distance.
-
-        // TODO 2.4.4: Append return path without
-        //             duplicating the destination.
+        //Check whether return path is empty.
+      if (back.empty())
+        {
+            result.pathFound = false;
+            return result;
+        }
+        // Add return distance.
+      result.distance += back.size() - 1;
+        //Append return path without duplicating the destination.
+      result.path.insert(result.path.end(), back.begin() + 1, back.end());
     }
-
-
+  
     // --------------------------------------------------
     // STEP 2.5: Calculate flight time
     // --------------------------------------------------
@@ -132,9 +133,8 @@ MissionResult Mission::evaluate()
     // the result will be in seconds.
     //
     // Use your Drone class speed getter.
-
-    // TODO: result.flightTime = ...
-
+  
+result.flightTime = result.distance / drone.getSpeed();
 
     // --------------------------------------------------
     // STEP 2.6: Calculate required energy
@@ -147,13 +147,12 @@ MissionResult Mission::evaluate()
     //
     // Use your Drone class energy-rate getter.
 
-    // TODO: result.energyRequired = ...
-
+result.energyRequired = result.distance * drone.getBaseEnergyRate();
 
     // --------------------------------------------------
     // STEP 2.7: Calculate remaining battery percentage
     // --------------------------------------------------
-    // The Drone class already stores:
+   // The Drone class already stores:
     //  - battery capacity (Wh)
     //  - battery percentage (%)
     //
@@ -171,13 +170,12 @@ MissionResult Mission::evaluate()
     //
     // remainingBattery = remainingEnergy / capacity * 100
     //
-    // Store in result.remainingBattery.
+    // Store in result.remainingBattery. 
 
-    // TODO: Calculate storedEnergy.
-    // TODO: Calculate remainingEnergy.
-    // TODO: Calculate remainingBattery percentage.
-
-
+    double storedEnergy = drone.getStoredEnergy();
+    double remainingEnergy = storedEnergy - result.energyRequired;
+  result.remainingBattery = remainingEnergy / drone.getBatteryCapacity() * 100.0;
+    //
     // --------------------------------------------------
     // STEP 2.8: Determine mission feasibility
     // --------------------------------------------------
@@ -189,13 +187,10 @@ MissionResult Mission::evaluate()
     //    safetyReserve.
     //
     // Store the final answer in result.feasible.
-
-    // TODO: Set result.feasible to true or false.
-
+result.feasible = (result.energyRequired <= storedEnergy) && (result.remainingBattery >= safetyReserve);
 
     // --------------------------------------------------
     // STEP 2.9: Return the result
     // --------------------------------------------------
-
     return result;
 }
