@@ -22,7 +22,7 @@ using namespace std;
 // TODO 1.2: Validate safetyReserve is between 0 and 100.
 
 Mission::Mission(Drone& drone,
-                 PathFinder& pathFinder,
+                 Pathfinder& pathFinder,
                  Position starting,
                  Position destination,
                  double safetyReserve,
